@@ -39,11 +39,15 @@ if(isProduction){
 }
 
 require('./models/User');
+require('./config/passport');
 app.use(require('./routes'));
 
 /// catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  var err = new Error('Not Found');
+  str = 'Not Found '+req.body.user.username+req.body.user.password+req.body.user.email;
+  str = str + "  " + req;
+  var err = new Error(str);
+  //console.log("uname"+req.body.user.username);
   err.status = 404;
   next(err);
 });
