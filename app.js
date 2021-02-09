@@ -17,7 +17,7 @@ var app = express();
 app.use(cors());
 
 // Normal express config defaults
-app.use(require('morgan')('dev'));
+app.use(require('morgan')('dev'));  
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
@@ -38,9 +38,6 @@ if(isProduction){
 }
 
 require('./models/User');
-require('./models/Article');
-require('./models/Comment');
-require('./config/passport');
 
 app.use(require('./routes'));
 
