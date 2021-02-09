@@ -18,7 +18,7 @@ var app = express();
 app.use(cors());
 
 // Normal express config defaults
-app.use(require('morgan')('dev'));
+app.use(require('morgan')('dev'));  
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
