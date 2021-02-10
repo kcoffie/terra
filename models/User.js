@@ -10,6 +10,7 @@ var UserSchema = new mongoose.Schema({
     bio: String,
     image: String,
     favorites: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Article' }],
+    following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     hash: String,
     salt: String
 }, { timestamps: true });
@@ -52,27 +53,45 @@ UserSchema.methods.toProfileJSONFor = function (user) {
         username: this.username,
         bio: this.bio,
         image: this.image || 'https://imagesvc.meredithcorp.io/v3/jumpstartpure/image?url=https://static.onecms.io/wp-content/uploads/sites/37/2016/05/15215821/101490925.jpg&w=1280&h=720&q=90&c=cc',
-        following: false  // we'll implement following functionality in a few chapters :)
+        following: user ? user.isFollowing(this._id) : false
     };
 };
 
 UserSchema.methods.favorite = function (id) {
-    console.log('fave '+id)
-    console.log('this.favorites.indexOf(id) '+this.favorites.indexOf(id))
+    console.log('fave ' + id)
+    console.log('this.favorites.indexOf(id) ' + this.favorites.indexOf(id))
     if (this.favorites.indexOf(id) === -1) {
         this.favorites = this.favorites.concat(id);
     }
     return this.save();
 };
 
-UserSchema.methods.unfavorite = function(id){
-    this.favorites.remove( id );
+UserSchema.methods.unfavorite = function (id) {
+    this.favorites.remove(id);
     return this.save();
 };
 
-UserSchema.methods.isFavorite = function(id){
-    return this.favorites.some(function(favoriteId){
-      return favoriteId.toString() === id.toString();
+UserSchema.methods.isFavorite = function (id) {
+    return this.favorites.some(function (favoriteId) {
+        return favoriteId.toString() === id.toString();
+    });
+};
+
+UserSchema.methods.follow = function (id) {
+    if (this.following.indexOf(id) === -1) {
+        this.following = this.following.concat(id);
+    }
+    return this.save();
+};
+
+UserSchema.methods.unfollow = function (id) {
+    this.following.remove(id);
+    return this.save();
+};
+
+UserSchema.methods.isFollowing = function(id){
+    return this.following.some(function(followId){
+      return followId.toString() === id.toString();
     });
 };
 
